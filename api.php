@@ -5,7 +5,7 @@ include "xml2json.php";
 //comune (for debug)
 $comune="Prato";
 
-get_meteo($comune);
+//get_meteo($comune);
 print_r('----------------------');
 get_rischio($comune);
 
@@ -42,6 +42,8 @@ function get_meteo($comune)
 	}else
 	{
 		$arrayData = xmlToArray($xmlNode);
+		$tag='comune';
+		$arrayData[] = array($tag=>$comune);
 		$json=json_encode($arrayData);
 	}
 	print_r($json);
@@ -53,7 +55,7 @@ function get_meteo($comune)
  * data source http://www.sir.toscana.it/
  * @param comune il nome del comune di cui si vuol sapere il rischio
  * @return $json data (null if data are not available)
- * - rischi oggi
+ * -------rischi oggi
  * --idrogeologico
  * --idraulico
  * --vento
@@ -61,7 +63,7 @@ function get_meteo($comune)
  * --neve
  * --ghiaccio
  * --temporali
- * - rischi domani
+ * --------rischi domani
  * --idrogeologico
  * --idraulico
  * --vento
@@ -93,8 +95,9 @@ function get_rischio($comune)
 		
 		//$tags = $xmlrisk->xpath("rischio[@name]");
 		$rischi = $xmlrisk->xpath("//rischi/rischio/area[contains(@name,'$area')]");
-		print_r($tags);
 		//$arrayData = xmlToArray($rischi);
+		$tag='comune';
+		$rischi[] = array($tag=>$comune);
 		$json=json_encode($rischi);
 	}
 	print_r($json);
