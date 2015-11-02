@@ -2,9 +2,11 @@
 
 include "xml2json.php";
 
-//nome comune (for debug)
-$comune="Vaiano";
+//comune (for debug)
+$comune="Prato";
 
+get_meteo($comune);
+print_r('----------------------');
 get_rischio($comune);
 
 /**
@@ -26,14 +28,23 @@ function get_meteo($comune)
 	//cerca il nodo e preleva l'url
 	$xmlNode = simplexml_load_file($meteo_list_url);
 	$node = $xmlNode->xpath("//link[contains(title,'$comune')]");
+	
 	//print_r($node);
 	$url_node=$node[0]->url;
 
 	//carica il file XML e restituisce il JSON corrispondente
 	$url_meteo=$url_base_meteo. $url_node  .'.xml';
 	$xmlNode = simplexml_load_file($url_meteo);
-	$arrayData = xmlToArray($xmlNode);
-	$json=json_encode($arrayData);
+	if ($xmlNode==false)
+	{
+		print("Errore nella ricerca del file relativo al rischio");
+		$json=null;
+	}else
+	{
+		$arrayData = xmlToArray($xmlNode);
+		$json=json_encode($arrayData);
+	}
+	print_r($json);
 	return $json;
 }
 
@@ -85,8 +96,8 @@ function get_rischio($comune)
 		print_r($tags);
 		//$arrayData = xmlToArray($rischi);
 		$json=json_encode($rischi);
-		print_r($json);
 	}
+	print_r($json);
 	return $json;
 }
 
